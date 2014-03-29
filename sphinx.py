@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+#coding:utf-8
+"""
+  Author:   --<zhiyuan>--
+  Purpose: 
+  Created: 2014/3/28
+"""
+
+from sphinxapi import *
 
 sphinx_conf = {'q' : '',
                'mode' : SPH_MATCH_ALL,
@@ -12,10 +21,11 @@ sphinx_conf = {'q' : '',
                'limit' : 200
                }
 
-db = torndb.Connection("127.0.0.1", "dht", "root", "admin")
 
 class Sphinx_search():
-    def __init__(self):
+    
+    def __init__(self, db):
+        self.db = db
         self.cl = SphinxClient()
         self.cl.SetServer ( sphinx_conf['host'], sphinx_conf['port'] )
         self.cl.SetMatchMode ( sphinx_conf['mode'] )
@@ -34,6 +44,6 @@ class Sphinx_search():
         if res.has_key('matches'):
             for match in res['matches']:
                 sql = "select * from magnet where id = %s"
-                result = db.query(sql,match['id'])
+                result = self.db.query(sql,match['id'])
                 results.append(result[0])
         return results
