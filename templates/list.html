@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>A DHT Search Engine -- Leaf Search</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="{{ static_url("css/bootstrap.min.css") }}" />
+
+    <!-- Custom Google Web Font -->
+    <link rel="stylesheet" href="{{ static_url("font-awesome/css/font-awesome.min.css") }}" />
+    <link rel="stylesheet" href="{{ static_url("css/googlefonts.css") }}" />	
+
+    <!-- Add custom CSS here -->
+    <link rel="stylesheet" href="{{ static_url("css/leafsearch.css") }}" />    
+</head>
+
+<body>
+    <div class="navbar navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">Leaf Search <i class="fa fa-pagelines"></i></a>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="navbar-collapse">
+          <div class="navbar-form navbar-left" role="search">
+            <input id="search-box-min" type="text" onkeypress="EnterPress(event)" onkeydown="EnterPress()" />
+            <a><img src="{{ static_url("img/search.png") }}" onclick="search()"/></a>
+          </div>
+          <ul class="navbar-link navbar-link-index navbar-right">
+            <li><a href="/log/0000-00/-00">Log&nbsp;&nbsp;|</a>
+            </li>
+            <li><a href="/top100/">Top&nbsp;&nbsp;|</a>
+            </li>
+            <li><a href="#">About</a>
+            </li>
+          </ul>
+        </div><!-- /.navbar-collapse -->
+      </div>
+    </div>
+    
+    <div class="intro-header">
+      <div class="container">
+        <div class="row">
+          <div class="main col-lg-12">
+            </br>
+            {% if results %}
+              {% for i, result in results %}
+              <div class="list-group">
+                <h4>
+                  <a href="#">{{(currentPage-1)*20+i+1}}.&nbsp;&nbsp;&nbsp;&nbsp;{{result["name"]}}</a>
+                </h4>
+                <p>创建时间：{{ result["creation_date"] }}&nbsp;&nbsp;&nbsp;&nbsp;
+                文件数：{{ result["num_files"] }}&nbsp;&nbsp;&nbsp;&nbsp;
+                总大小：{% module FileSizeModule(result["total_size"]) %}&nbsp;&nbsp;&nbsp;&nbsp;
+                总请求数：{%if "query" in result%} {{result["query"]}}{%else%}None{%end%}&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="magnet:?xt=urn:btih:{{result["info_hash"]}}">磁力链接</a>&nbsp;&nbsp;
+                <i class="fa fa-copy fa-lg copy" onclick="copy('magnet:?xt=urn:btih:{{result["info_hash"]}}')"></i>
+                </p>
+                {% for file in listfile(result["files"]) %}
+                  {%if len(file)==2%}
+                    {% if int(file[1])>500000 and "_____padding_file" not in file[0]%}
+                      <li>{{ file[0] }}&nbsp;----&nbsp;{% module FileSizeModule(file[1]) %}</li>
+                    {% end %}
+                  {% end %}
+                {% end %}
+              </div>
+              {% end %}
+              <div class="Pagination">
+                <p>
+                  {% if totalPages> 1 and currentPage!=1 %}<a href="1">1</a>|{% end %}
+                  {% if (currentPage-2) > 1%} <a href="{{currentPage-2}}">--</a>|{% end %}
+                  {% if (currentPage-1) > 1 %} <a href="{{currentPage-1}}">-</a>|{% end %}
+                  <a>{{currentPage}}</a>
+                  {% if (currentPage + 1) < totalPages %} | <a href="{{currentPage + 1}}">+</a> {% end %}
+                  {% if (currentPage + 2) < totalPages %}| <a href="{{currentPage + 2}}">++</a> {% end %}
+                  {% if totalPages> 1 and totalPages!=currentPage %}|<a href="{{totalPages}}">{{totalPages}}</a>{% end %}
+                  
+                </p>
+              </div>
+            {% else %}
+              <div class="list-group">
+                <h3>没有找到资源，换个关键词试试！<h3>
+              </div>
+            {% end %}
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <p class="copyright">Copyright &copy; Leaf Search 2013. All Rights Reserved</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script type="text/javascript">
+    function EnterPress(e){
+      var e = e || window.event; 
+        if(e.keyCode == 13){
+          var y = document.getElementById("search-box-min").value
+          y = y.replace(/\/|\\|%/g, "")
+          window.location.href="/"+y+'/'
+          } 
+    }
+    function search(){
+      var y = document.getElementById("search-box-min").value
+      y = y.replace(/\/|\\|%/g, "")
+      window.location.href="/"+y+'/'
+    }
+    function copy(text) {
+      if(window.clipboardData){
+        window.clipboardData.clearData();
+        window.clipboardData.setData("Text", text);
+      }
+      else{
+        window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
+      }
+    }
+    </script>
+    <!--<script src="js/jquery-1.10.2.js"></script>-->
+    <!--<script src="js/bootstrap.js"></script>-->
+
+</body>
+
+</html>
