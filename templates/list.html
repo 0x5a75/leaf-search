@@ -54,20 +54,24 @@
                 <h4>
                   <a href="#">{{(currentPage-1)*20+i+1}}.&nbsp;&nbsp;&nbsp;&nbsp;{{result["name"]}}</a>
                 </h4>
-                <p>创建时间：{{ result["creation_date"] }}&nbsp;&nbsp;&nbsp;&nbsp;
-                文件数：{{ result["num_files"] }}&nbsp;&nbsp;&nbsp;&nbsp;
-                总大小：{% module FileSizeModule(result["total_size"]) %}&nbsp;&nbsp;&nbsp;&nbsp;
-                总请求数：{%if "query" in result%} {{result["query"]}}{%else%}None{%end%}&nbsp;&nbsp;&nbsp;&nbsp;
+                <p>创建时间：{% if "creation_date" in result %}{{ result["creation_date"] }}{%else%}None{%end%}&nbsp;&nbsp;&nbsp;&nbsp;
+                文件数：{% if "num_files" in result %}{{ result["num_files"] }}{%else%}None{%end%}&nbsp;&nbsp;&nbsp;&nbsp;
+                总大小：{% if "total_size" in result %}{% module FileSizeModule(result["total_size"]) %}{%else%}None{%end%}&nbsp;&nbsp;&nbsp;&nbsp;
+                总请求数：{%if "query" in result%}{{result["query"]}}{%else%}None{%end%}&nbsp;&nbsp;&nbsp;&nbsp;
                 <a href="magnet:?xt=urn:btih:{{result["info_hash"]}}">磁力链接</a>&nbsp;&nbsp;
                 <i class="fa fa-copy fa-lg copy" onclick="copy('magnet:?xt=urn:btih:{{result["info_hash"]}}')"></i>
                 </p>
-                {% for file in listfile(result["files"]) %}
-                  {%if len(file)==2%}
-                    {% if int(file[1])>500000 and "_____padding_file" not in file[0]%}
-                      <li>{{ file[0] }}&nbsp;----&nbsp;{% module FileSizeModule(file[1]) %}</li>
+                {%if "files" in result%}
+                  {% for file in listfile(result["files"]) %}
+                    {%if len(file)==2%}
+                      {% if int(file[1])>500000 and "_____padding_file" not in file[0]%}
+                        <li>{{ file[0] }}&nbsp;----&nbsp;{% module FileSizeModule(file[1]) %}</li>
+                      {% end %}
                     {% end %}
                   {% end %}
-                {% end %}
+                {%else%}
+                  <li>Bitsnoop old data up to 8th February 2012 </li>
+                {%end%}
               </div>
               {% end %}
               <div class="Pagination">

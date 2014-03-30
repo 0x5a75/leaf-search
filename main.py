@@ -38,6 +38,11 @@ class ListHandler(tornado.web.RequestHandler):
         if q[0] in (u'$', u'\uffe5'):
             sql = "select * from magnet where name like %s"
             results = db.query(sql,("%"+q[1:]+"%"))
+            #try:
+                #results = ss.query_bits(q)
+            #except:
+                #results = None
+            
         elif q =='top100':
             sql = u'SELECT magnet.*,query from magnet LEFT JOIN hash_info ON magnet.info_hash\
             = hash_info.`hash` WHERE hash_info.`query` > 1000 ORDER BY hash_info.`query` DESC LIMIT 100'
@@ -45,6 +50,11 @@ class ListHandler(tornado.web.RequestHandler):
         else:
             try:
                 results = ss.query(q)
+            except:
+                results = None
+        if not results:
+            try:
+                results = ss.query_bits(q)
             except:
                 results = None
 

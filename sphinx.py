@@ -39,7 +39,7 @@ class Sphinx_search():
             self.cl.SetLimits ( 0, sphinx_conf['limit'], max(sphinx_conf['limit'],200) )
         
     def query(self, q=sphinx_conf['q']):
-        res = self.cl.Query ( q, sphinx_conf['index'] )
+        res = self.cl.Query ( q, 'delta main' )
         results = []
         if res.has_key('matches'):
             for match in res['matches']:
@@ -47,3 +47,13 @@ class Sphinx_search():
                 result = self.db.query(sql,match['id'])
                 results.append(result[0])
         return results
+    
+    def query_bits(self, q=sphinx_conf['q']):
+        res = self.cl.Query ( q, 'bitsnoop' )
+        results = []
+        if res.has_key('matches'):
+            for match in res['matches']:
+                sql = "select * from bitsnoop where id = %s"
+                result = self.db.query(sql,match['id'])
+                results.append(result[0])
+        return results    
