@@ -31,7 +31,7 @@
             <input id="search-box-min" type="text" onkeypress="EnterPress(event)" onkeydown="EnterPress()" />
             <a><img src="{{ static_url("img/search.png") }}" onclick="search()"/></a>
           </div>
-          <ul class="navbar-link navbar-link-index navbar-right">
+          <ul class="navbar-link navbar-right">
             <li><a href="/log/0000-00/-00">Log&nbsp;&nbsp;|</a>
             </li>
             <li><a href="/top100/">Top&nbsp;&nbsp;|</a>
@@ -43,13 +43,14 @@
       </div>
     </div>
     
-    <div class="intro-header">
+    <div class="page">
       <div class="container">
         <div class="row">
           <div class="main col-lg-9">
             <div class="list-group">
               </br>
               {% if logs %}
+                <h3>{{dt.date()}}&nbsp;&nbsp;总计工作:&nbsp;{{info[0]}}小时{{info[1]}}分钟，发送请求:&nbsp;{{info[2]}}，接受查询:&nbsp;{{info[3]}}，新增info-hash:&nbsp;25532</h3>
                 {% for log in logs %}
                 <p> 时间:{{log['log_time']}}--节点总数：{{log['node_num']}}--发送请求数：{{log['send_num']}}
                 --收到查询数：{{log['query_num']}}--添加info_hash数：{{log['add_num']}}<p>
