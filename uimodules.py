@@ -13,7 +13,7 @@ import datetime
 class CalModule(tornado.web.UIModule):
     def render(self, dt):
         cal = MyCalendar(calendar.SUNDAY).formatmonth(dt.year, dt.month)
-        return cal.replace(u"<td><a href=\"./-%d\">"%dt.day, u"<td class=\"active\"><a href=\"./-%d\">"%dt.day)
+        return cal.replace("<td><a href=\"./-%d\">"%dt.day, "<td class=\"active\"><a href=\"./-%d\">"%dt.day)
 
 class FileSizeModule(tornado.web.UIModule):
     def render(self, size):

@@ -48,12 +48,11 @@
         <div class="row">
           <div class="main col-lg-9">
             <div class="list-group">
-              </br>
               {% if logs %}
-                <h3>{{dt.date()}}&nbsp;&nbsp;总计工作:&nbsp;{{info[0]}}小时{{info[1]}}分钟，发送请求:&nbsp;{{info[2]}}，接受查询:&nbsp;{{info[3]}}，新增info-hash:&nbsp;25532</h3>
+                <h3>{{dt.date()}}&nbsp;&nbsp;总计工作:&nbsp;{{info[0]}}小时{{info[1]}}分钟，发送请求:&nbsp;{{info[2]}}，接受查询:&nbsp;{{info[3]}}，新增info-hash:&nbsp;{{info[4]}}</h3>
                 {% for log in logs %}
-                <p> 时间:{{log['log_time']}}--节点总数：{{log['node_num']}}--发送请求数：{{log['send_num']}}
-                --收到查询数：{{log['query_num']}}--添加info_hash数：{{log['add_num']}}<p>
+                <p> 时间:{{log['log_time']}}--节点总数:{{log['node_num']}}--发送请求数:{{log['send_num']}}
+                --收到查询数:{{log['query_num']}}--添加info_hash数:{{log['add_num']}}<p>
                 {% end %}
               {% else %}
                 <p>No logs</p>
@@ -61,8 +60,8 @@
             </div>
           </div>
           <div class="col-lg-3">
-          {% module CalModule(dt) %}
-          <div>
+            {% module CalModule(dt) %}
+          </div>
         </div>
       </div>
       <div class="container">

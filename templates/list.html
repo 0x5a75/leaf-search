@@ -47,8 +47,13 @@
       <div class="container">
         <div class="row">
           <div class="main col-lg-12">
-            </br>
             {% if results %}
+              {% if info %}
+              <div class="list-group">
+                <h3>查询到&nbsp;&nbsp;{{info['total_found']}}&nbsp;&nbsp;条结果（用时&nbsp;&nbsp;{{info['time']}}&nbsp;&nbsp;秒）
+                关键词:{% for i in info['words'] %}&nbsp;&nbsp;&nbsp;&nbsp;{{i['word']}}{% end %}</h3>
+              </div>
+              {% end %}
               {% for i, result in results %}
               <div class="list-group">
                 <h4>
@@ -88,7 +93,7 @@
               </div>
             {% else %}
               <div class="list-group">
-                <h3>没有找到资源，换个关键词试试！<h3>
+                <h3>没有找到任何资源，换个关键词试试！</h3>
               </div>
             {% end %}
           </div>

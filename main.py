@@ -38,15 +38,19 @@ class ListHandler(tornado.web.RequestHandler):
         if q[0] in (u'$', u'\uffe5'):
             sql = "select * from magnet where name like %s"
             results = db.query(sql,("%"+q[1:]+"%"))
+            info = None
         elif q =='top100':
             sql = u'SELECT magnet.*,query from magnet LEFT JOIN hash_info ON magnet.info_hash\
             = hash_info.`hash` WHERE hash_info.`query` > 1000 ORDER BY hash_info.`query` DESC LIMIT 100'
             results = db.query(sql)
+            info = None
         else:
             try:
-                results = ss.query(q)
-            except:
-                results = None
+                ss = Sphinx_search()
+                [info, results] = ss.query(q)
+            except BaseException, e:
+                print e
+                [info, results] = [None, None]
         #if not results:
             #try:
                 #results = ss.query_bits(q)
@@ -69,7 +73,7 @@ class ListHandler(tornado.web.RequestHandler):
             startNewsItemNumber = (int(currentPage) - 1) * newsItemsPerPage
             lastNewsItemNumber = startNewsItemNumber + newsItemsPerPage
             results = results[startNewsItemNumber:lastNewsItemNumber]
-            self.render('list.html', results=enumerate(results), currentPage=currentPage, totalPages=totalPages, listfile=listfile)
+            self.render('list.html', results=enumerate(results), currentPage=currentPage, totalPages=totalPages, listfile=listfile, info=info)
         else:
             self.render('list.html', results=results)
 
@@ -86,15 +90,15 @@ class LogHandler(tornado.web.RequestHandler):
         logs = db.query(sql,dt.date())
         info = ()
         if logs:
-            c = send = query = 0
+            c = send = query = add =0
             for log in logs:
                 c = c+2
                 send = send + log['send_num']
                 query = query + log['query_num']
+                add = add +log['add_num']
             h = c/60
             m = c%60
-            info = (h, m, send, query)
-            print info
+            info = (h, m, send, query, add)
         self.render('log.html',logs=logs, info=info, dt=dt)
         
 if __name__ == '__main__':
@@ -113,7 +117,6 @@ if __name__ == '__main__':
         **settings
 )
     db = torndb.Connection("127.0.0.1", "dht", "root", "admin")
-    ss = Sphinx_search(db)
     http_server = tornado.httpserver.HTTPServer(app)
     http_server.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
